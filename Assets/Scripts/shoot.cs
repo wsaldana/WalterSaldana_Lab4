@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityStandardAssets.Characters.FirstPerson;
 
 public class shoot : MonoBehaviour
 {
@@ -10,6 +11,8 @@ public class shoot : MonoBehaviour
     public Slider healthBar;
     public TextMeshProUGUI healthValue;
     public int count;
+    public Button nextLevel;
+    public Image aim;
 
     void Start(){
         count = 0;
@@ -17,10 +20,10 @@ public class shoot : MonoBehaviour
         healthValue = GameObject.FindGameObjectWithTag("healthCounter").GetComponent<TextMeshProUGUI>();
     }
 
-    void Update(){
+    void Update() {
         Ray ray = gameObject.GetComponent<Camera>().ViewportPointToRay(new Vector3(0.5F, 0.5F, 0));
         RaycastHit hit;
-        if(Input.GetMouseButtonDown(0)) {
+        if (Input.GetMouseButtonDown(0)) {
             if (Physics.Raycast(ray, out hit)) {
                 if (hit.collider.gameObject.tag == "lb_bird") {
                     if (count < 3) {
@@ -32,7 +35,15 @@ public class shoot : MonoBehaviour
                 }
             }
         }
-        
+
+        if (count >= 3) {
+            FirstPersonController controller = GameObject.FindGameObjectWithTag("Player").GetComponent<FirstPersonController>();
+            controller.gameObject.GetComponent<FirstPersonController>().enabled = false;
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+            nextLevel.gameObject.SetActive(true);
+            aim.gameObject.SetActive(false);
+        }
     }
 
     private void updateBar() {
